@@ -208,7 +208,9 @@ const Report = () => {
 						<IconDownload />
 					</IconButton>
 				) : row?.isGenerating ? (
-					<CircularProgress />
+					<Box sx={{ display: "flex", alignItems: "center" }}>
+						<CircularProgress size={20} />
+					</Box>
 				) : (
 					<IconButton
 						aria-label="Generate"
