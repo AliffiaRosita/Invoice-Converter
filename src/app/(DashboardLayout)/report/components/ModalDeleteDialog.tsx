@@ -1,3 +1,4 @@
+import { useDeleteInvoice } from "@/services/rest/invoices/mutation";
 import {
 	Box,
 	Button,
@@ -25,23 +26,21 @@ const ModalDeleteDialog = ({
 	setTableData,
 }: ModalDeleteDialogProps) => {
 	const [isSubmitting, setisSubmitting] = React.useState(false);
+	const mutationDeleteInvoice = useDeleteInvoice();
 	const handleDelete = () => {
-		setisSubmitting(true);
-		const url = `${process.env.NEXT_PUBLIC_API_URL}/invoice/${id}`;
-		fetch(url, {
-			method: "DELETE",
-		})
-			.then((response) => response.json())
-			.then((data) => {
+		mutationDeleteInvoice.mutate(id, {
+			onSuccess: () => {
 				setTableData((prevTableData: any) => {
 					return prevTableData.filter((item: any) => item.id !== id);
 				});
 				setisSubmitting(false);
 				closeDialog();
-			})
-			.catch((error) => {
+			},
+			onError: (error: any) => {
 				console.error(error);
-			});
+			},
+		});
+		setisSubmitting(true);
 	};
 	return (
 		<Dialog

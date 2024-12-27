@@ -29,6 +29,14 @@ import moment from "moment-timezone";
 
 import ModalDeleteDialog from "./components/ModalDeleteDialog";
 import { DataGrid } from "@mui/x-data-grid";
+import {
+	useDownloadInvoice,
+	useGenerateInvoice,
+	useGetInvoices,
+	useUploadInvoice,
+} from "@/services/rest/invoices/mutation";
+import { on } from "events";
+import { Invoices } from "@/services/rest/invoices/types";
 
 const style = {
 	position: "absolute",
@@ -50,6 +58,10 @@ const Report = () => {
 	const handleOpen = () => setOpen(true);
 	const handleClose = () => setOpen(false);
 	const [tableData, setTableData] = React.useState([]);
+	const mutationGetInvoices = useGetInvoices();
+	const mutationGenerateInvoice = useGenerateInvoice();
+	const mutationDownloadInvoice = useDownloadInvoice();
+	const mutationUploadInvoice = useUploadInvoice();
 	// const columns = [
 	// 	{ title: "ID", data: "id", visible: false }, // Kolom ID disembunyikan
 	// 	{ title: "Name", data: "name" },
@@ -70,9 +82,7 @@ const Report = () => {
 	const handleCloseDialog = () => {
 		setOpenDialog(false);
 	};
-	const handleGenerate = (id: String) => {
-		console.log(tableData);
-
+	const handleGenerate = (id: string) => {
 		setTableData((prevTableData: any) => {
 			const updatedTableData = prevTableData.map((item: any) => {
 				if (item.id === id) {
@@ -85,18 +95,11 @@ const Report = () => {
 		generateFile(id);
 	};
 
-	const generateFile = async (id: String) => {
+	const generateFile = async (id: any) => {
 		// console.log(id);
-		console.log("===generate file===");
 
-		fetch(
-			`${process.env.NEXT_PUBLIC_API_URL}/invoice/generate-excel/${id}`,
-			{
-				method: "GET",
-			}
-		)
-			.then((response) => response.json())
-			.then((data) => {
+		mutationGenerateInvoice.mutate(id, {
+			onSuccess: (data: any) => {
 				setTableData((prevTableData: any) => {
 					return prevTableData.map((item: any) => {
 						if (item.id === id) {
@@ -109,21 +112,18 @@ const Report = () => {
 						return item;
 					});
 				});
-				// setIsGenerating(false);
-			})
-			.catch((error) => {
+			},
+			onError: (error: any) => {
 				console.error(error);
-			});
+			},
+		});
 	};
 	async function getData() {
-		const url = `${process.env.NEXT_PUBLIC_API_URL}/invoices`;
+		mutationGetInvoices.mutate(undefined, {
+			onSuccess: (data: any) => {
+				const response = data.data;
 
-		fetch(url, {
-			method: "GET",
-		})
-			.then((response) => response.json())
-			.then((data) => {
-				const invoices = data.data.map((item: any) => {
+				const invoices = response.data.map((item: Invoices) => {
 					return {
 						id: item.id,
 						name: item.name,
@@ -138,28 +138,26 @@ const Report = () => {
 					};
 				});
 				setTableData(invoices);
-			})
-			.catch((error) => {
+			},
+			onError: (error: any) => {
 				console.error(error);
-			});
+			},
+		});
 	}
 
-	const handleDownload = (id: String) => {
-		const url = `${process.env.NEXT_PUBLIC_API_URL}/invoice/download-excel/${id}`;
-		fetch(url, {
-			method: "GET",
-		})
-			.then((response) => response.blob())
-			.then((blob) => {
-				const url = window.URL.createObjectURL(blob);
+	const handleDownload = (id: any) => {
+		mutationDownloadInvoice.mutate(id, {
+			onSuccess: (data: any) => {
+				const url = window.URL.createObjectURL(data.data);
 				const a = document.createElement("a");
 				a.href = url;
 				a.download = "invoice.xlsx";
 				a.click();
-			})
-			.catch((error) => {
+			},
+			onError: (error: any) => {
 				console.error(error);
-			});
+			},
+		});
 	};
 
 	React.useEffect(() => {
@@ -327,37 +325,24 @@ const Report = () => {
 														values.file
 													);
 												}
-												const url = `${process.env.NEXT_PUBLIC_API_URL}/invoice/upload`;
 
-												fetch(url, {
-													method: "POST",
-													body: formData,
-												})
-													.then((response) =>
-														response.json()
-													)
-													.then((data) => {
-														handleClose();
-														setOpenDialog(true);
-														getData();
-													})
-													.catch((error) => {
-														console.error(
-															"Error:",
-															error
-														);
-													});
-
-												// setTimeout(() => {
-												// 	setSubmitting(false);
-												// 	alert(
-												// 		JSON.stringify(
-												// 			values,
-												// 			null,
-												// 			2
-												// 		)
-												// 	);
-												// }, 500);
+												mutationUploadInvoice.mutate(
+													formData,
+													{
+														onSuccess: (
+															data: any
+														) => {
+															handleClose();
+															setOpenDialog(true);
+															getData();
+														},
+														onError: (
+															error: any
+														) => {
+															console.log(error);
+														},
+													}
+												);
 											}}
 										>
 											{({ submitForm, isSubmitting }) => (

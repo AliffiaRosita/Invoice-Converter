@@ -6,6 +6,7 @@ import {
 	IconLogin,
 	IconMoodHappy,
 	IconTypography,
+	IconUser,
 	IconUserPlus,
 } from "@tabler/icons-react";
 
@@ -80,6 +81,12 @@ const Menuitems = [
 		title: "Invoice Report",
 		icon: IconFile,
 		href: "/report",
+	},
+	{
+		id: uniqueId(),
+		title: "Users",
+		icon: IconUser,
+		href: "/user",
 	},
 ];
 
