@@ -96,8 +96,6 @@ const Report = () => {
 	};
 
 	const generateFile = async (id: any) => {
-		// console.log(id);
-
 		mutationGenerateInvoice.mutate(id, {
 			onSuccess: (data: any) => {
 				setTableData((prevTableData: any) => {
@@ -318,7 +316,6 @@ const Report = () => {
 												{ setSubmitting }
 											) => {
 												setSubmitting(true);
-												console.log(values.file);
 												if (values.file) {
 													formData.append(
 														"file",
@@ -339,7 +336,9 @@ const Report = () => {
 														onError: (
 															error: any
 														) => {
-															console.log(error);
+															console.error(
+																error
+															);
 														},
 													}
 												);

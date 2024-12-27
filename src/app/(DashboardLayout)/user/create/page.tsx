@@ -3,6 +3,7 @@ import React from "react";
 import PageContainer from "../../components/container/PageContainer";
 import DashboardCard from "../../components/shared/DashboardCard";
 import { Typography } from "@mui/material";
+import UserForm from "../components/UserForm";
 
 const UserCreate = () => {
 	return (
@@ -11,7 +12,7 @@ const UserCreate = () => {
 			description="this is User Create page"
 		>
 			<DashboardCard title="User Create">
-				<Typography>This is a User Create page</Typography>
+				<UserForm mode="create" />
 			</DashboardCard>
 		</PageContainer>
 	);
