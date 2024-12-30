@@ -1,12 +1,25 @@
 "use client";
 import Link from "next/link";
-import { Grid, Box, Card, Stack, Typography } from "@mui/material";
+import {
+	Grid,
+	Box,
+	Card,
+	Stack,
+	Typography,
+	Collapse,
+	Alert,
+	IconButton,
+} from "@mui/material";
 // components
 import PageContainer from "@/app/(DashboardLayout)/components/container/PageContainer";
 import Logo from "@/app/(DashboardLayout)/layout/shared/logo/Logo";
 import AuthLogin from "../auth/AuthLogin";
+import { IconX } from "@tabler/icons-react";
+import React from "react";
 
-const Login2 = () => {
+const Login2 = ({ searchParams }: any) => {
+	const [open, setOpen] = React.useState(false);
+	const [errorMessage, setErrorMessage] = React.useState("");
 	return (
 		<PageContainer title="Login" description="this is Login page">
 			<Box
@@ -25,6 +38,36 @@ const Login2 = () => {
 					},
 				}}
 			>
+				<Grid
+					container
+					spacing={0}
+					display={"flex"}
+					justifyContent="center"
+				>
+					<Box>
+						<Collapse in={open}>
+							<Alert
+								action={
+									<IconButton
+										aria-label="close"
+										color="inherit"
+										size="small"
+										onClick={() => {
+											setOpen(false);
+										}}
+									>
+										<IconX />
+									</IconButton>
+								}
+								sx={{ mt: 2, backgroundColor: "error.light" }}
+								severity="error"
+							>
+								{errorMessage}
+							</Alert>
+						</Collapse>
+					</Box>
+				</Grid>
+
 				<Grid
 					container
 					spacing={0}
@@ -58,6 +101,7 @@ const Login2 = () => {
 								<Logo />
 							</Box>
 							<AuthLogin
+								searchParams={searchParams}
 								subtext={
 									<Typography
 										variant="subtitle1"
@@ -68,6 +112,8 @@ const Login2 = () => {
 										Your Social Campaigns
 									</Typography>
 								}
+								setErrorModal={setOpen}
+								setErrorMessage={setErrorMessage}
 							/>
 						</Card>
 					</Grid>

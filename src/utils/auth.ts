@@ -7,26 +7,24 @@ import axiosInstance from "./axios";
 const baseUrl = process.env.NEXT_PUBLIC_API_URL;
 
 function decodeToken(token: JWT, user: any) {
-	const decodedAccToken = jwt.decode(user.accessToken);
+	const decodedAccToken = jwt.decode(user.token);
 
 	if (decodedAccToken && typeof decodedAccToken !== "string") {
-		token.id = decodedAccToken.id;
+		token.id = user.user.id;
 		token.email = decodedAccToken.email;
-		token.name = decodedAccToken.name;
-		token.accessToken = user.accessToken;
-		token.accessTokenExp = decodedAccToken.exp;
-		token.isAdmin = decodedAccToken.isAdmin;
+		token.name = user.user.name;
+		token.role = user.user.role;
 	}
-	if (user.refreshToken) {
-		const decodedRefToken = jwt.decode(user.refreshToken);
+	// if (user.refreshToken) {
+	// 	const decodedRefToken = jwt.decode(user.refreshToken);
 
-		if (decodedRefToken && typeof decodedRefToken !== "string") {
-			token.refreshToken = user.refreshToken;
-			token.refreshTokenExp = decodedRefToken.exp
-				? decodedRefToken.exp
-				: 0;
-		}
-	}
+	// 	if (decodedRefToken && typeof decodedRefToken !== "string") {
+	// 		token.refreshToken = user.refreshToken;
+	// 		token.refreshTokenExp = decodedRefToken.exp
+	// 			? decodedRefToken.exp
+	// 			: 0;
+	// 	}
+	// }
 	return token;
 }
 
@@ -46,7 +44,7 @@ export const authOptions: NextAuthOptions = {
 			async authorize(credentials: any, req): Promise<any> {
 				if (!credentials?.email || !credentials?.password) return null;
 				try {
-					const response = await fetch(`${baseUrl}/auth/signin`, {
+					const response = await fetch(`${baseUrl}/login`, {
 						method: "POST",
 						headers: {
 							"Content-Type": "application/json",
@@ -54,15 +52,14 @@ export const authOptions: NextAuthOptions = {
 						body: JSON.stringify({
 							email: credentials.email,
 							password: credentials.password,
-							isAdmin: true,
 						}),
 					});
 					const data = await response.json();
 
 					if (response.ok) {
 						return {
-							accessToken: data.authorization.accessToken,
-							refreshToken: data.authorization.refreshToken,
+							token: data.data.token,
+							user: data.data.user,
 						};
 					} else {
 						return {
@@ -77,7 +74,7 @@ export const authOptions: NextAuthOptions = {
 		}),
 	],
 	callbacks: {
-		async signIn({ user }) {
+		async signIn({ user }: any) {
 			if (user?.error) {
 				throw new Error(user.error);
 			}
@@ -87,17 +84,17 @@ export const authOptions: NextAuthOptions = {
 			if (user) {
 				token = decodeToken(token, user);
 			}
-			if (Date.now() > token.accessTokenExp * 1000) {
-				const response = await axiosInstance(`/auth/refresh-token`, {
-					method: "POST",
-					data: { refreshToken: token.refreshToken },
-				});
-				const data = await response.data.data;
-				console.log("ini response refresh token", data);
-				if (response.status === 200) {
-					token = decodeToken(token, data);
-				}
-			}
+			// if (Date.now() > token.accessTokenExp * 1000) {
+			// 	const response = await axiosInstance(`/auth/refresh-token`, {
+			// 		method: "POST",
+			// 		data: { refreshToken: token.refreshToken },
+			// 	});
+			// 	const data = await response.data.data;
+			// 	console.log("ini response refresh token", data);
+			// 	if (response.status === 200) {
+			// 		token = decodeToken(token, data);
+			// 	}
+			// }
 			return token;
 		},
 		async session({ session, token }) {
@@ -106,13 +103,8 @@ export const authOptions: NextAuthOptions = {
 					id: token.id,
 					email: token.email,
 					name: token.name,
-					accessToken: token.accessToken,
-					accessTokenExp: token.accessTokenExp,
-					refreshToken: token.refreshToken,
-					refreshTokenExp: token.refreshTokenExp,
-					onboarded: token.onboarded,
-					isEmailVerified: token.isEmailVerified,
-				};
+					role: token.role,
+				} as { id: string; email: string; name: string; role: string };
 			}
 			return session;
 		},
@@ -121,6 +113,6 @@ export const authOptions: NextAuthOptions = {
 		strategy: "jwt",
 	},
 	pages: {
-		signIn: "/sign-in",
+		signIn: "/login",
 	},
 };
