@@ -1,7 +1,9 @@
 import {
 	IconAperture,
+	IconBox,
 	IconCopy,
 	IconFile,
+	IconFileAnalytics,
 	IconLayoutDashboard,
 	IconLogin,
 	IconMoodHappy,
@@ -78,7 +80,7 @@ const Menuitems = [
 	// },
 	{
 		id: uniqueId(),
-		title: "Invoice Report",
+		title: "File Invoice",
 		icon: IconFile,
 		href: "/report",
 	},
@@ -87,6 +89,18 @@ const Menuitems = [
 		title: "Users",
 		icon: IconUser,
 		href: "/user",
+	},
+	{
+		id: uniqueId(),
+		title: "Items",
+		icon: IconBox,
+		href: "/items",
+	},
+	{
+		id: uniqueId(),
+		title: "Invoices",
+		icon: IconFileAnalytics,
+		href: "/invoice",
 	},
 ];
 

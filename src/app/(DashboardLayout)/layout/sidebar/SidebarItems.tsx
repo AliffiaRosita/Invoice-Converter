@@ -10,7 +10,6 @@ const SidebarItems = ({ toggleMobileSidebar }: any) => {
 	const pathname = usePathname();
 	const pathDirect = pathname;
 	const { data: session }: any = useSession();
-	console.log(session);
 	const menus =
 		session?.user?.role === "admin"
 			? Menuitems

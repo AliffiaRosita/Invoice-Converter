@@ -1,9 +1,10 @@
 import { AxiosResponse } from "axios";
 import {
-	ResponseDownloadInvoice,
-	ResponseGenerateInvoice,
+	RequestUpdateInvoice,
 	ResponseGetInvoices,
-} from "./types";
+	ResponseInvoiceById,
+	ResponseXlsInvoice,
+} from "./type";
 import axiosInstance from "@/utils/axios";
 
 export const GetInvoices = async (): Promise<
@@ -12,28 +13,28 @@ export const GetInvoices = async (): Promise<
 	return await axiosInstance.get("/invoices");
 };
 
-export const GenerateInvoice = async (
+export const DownloadXlsInvoice = async (
 	id: string
-): Promise<AxiosResponse<ResponseGenerateInvoice>> => {
-	return await axiosInstance.get(`/invoice/generate-excel/${id}`);
-};
-
-export const DownloadInvoice = async (
-	id: string
-): Promise<AxiosResponse<ResponseDownloadInvoice>> => {
+): Promise<AxiosResponse<ResponseXlsInvoice>> => {
 	return await axiosInstance.get(`/invoice/download-excel/${id}`, {
 		responseType: "blob",
 	});
 };
-export const DeleteInvoice = async (
+export const DownloadPdfInvoice = async (
 	id: string
-): Promise<AxiosResponse<ResponseGetInvoices>> => {
-	return await axiosInstance.delete(`invoice/${id}`);
-};
-export const UploadInvoice = async (file: FormData): Promise<AxiosResponse> => {
-	return await axiosInstance.post(`/invoice/upload`, file, {
-		headers: {
-			"Content-Type": "multipart/form-data",
-		},
+): Promise<AxiosResponse<ResponseXlsInvoice>> => {
+	return await axiosInstance.get(`/invoice/download-pdf/${id}`, {
+		responseType: "blob",
 	});
+};
+export const GetInvoiceById = async (
+	id: string
+): Promise<AxiosResponse<ResponseInvoiceById>> => {
+	return await axiosInstance.get(`/invoice/items/${id}`);
+};
+export const UpdateInvoice = async (
+	data: RequestUpdateInvoice,
+	id: string
+): Promise<AxiosResponse<ResponseInvoiceById>> => {
+	return await axiosInstance.put(`/invoices/${id}`, data);
 };

@@ -9,6 +9,7 @@ import { useRouter } from "next/navigation";
 import { useGetUsers } from "@/services/rest/users/mutation";
 import moment from "moment-timezone";
 import ModalDeleteDialog from "./components/ModalDeleteDialog";
+import { Users } from "@/services/rest/users/type";
 
 const User = () => {
 	const [tableData, setTableData] = React.useState([]);
@@ -27,27 +28,22 @@ const User = () => {
 		{
 			field: "role",
 			headerName: "Role",
-			width: 390,
+			width: 100,
 		},
 		{
 			field: "email",
 			headerName: "Email",
-			width: 390,
-		},
-		{
-			field: "createdDate",
-			headerName: "Created Date",
 			width: 200,
 		},
 		{
-			field: "createdTime",
-			headerName: "Created Time",
+			field: "lastLoginAt",
+			headerName: "Last Login",
 			width: 200,
 		},
 		{
 			field: "actions",
 			headerName: "Actions",
-			width: 300,
+			width: 100,
 			sortable: false,
 			renderCell: (params: any) => renderActionButton(params.row),
 		},
@@ -57,18 +53,15 @@ const User = () => {
 		mutationGetUsers.mutate(undefined, {
 			onSuccess: (data: any) => {
 				const response = data.data.data;
-				const users = response.map((user: any) => {
+				const users = response.map((user: Users) => {
 					return {
 						id: user.id,
 						name: user.name,
 						role: user.role,
 						email: user.email,
-						createdDate: moment
-							.tz(user.created_at, "Asia/Jakarta")
-							.format("LL"),
-						createdTime: moment
-							.tz(user.created_at, "Asia/Jakarta")
-							.format("LT"),
+						lastLoginAt: moment
+							.tz(user.last_login_at, "Asia/Jakarta")
+							.format("lll"),
 					};
 				});
 				setTableData(users);

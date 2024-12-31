@@ -34,9 +34,9 @@ import {
 	useGenerateInvoice,
 	useGetInvoices,
 	useUploadInvoice,
-} from "@/services/rest/invoices/mutation";
+} from "@/services/rest/file-invoices/mutation";
 import { on } from "events";
-import { Invoices } from "@/services/rest/invoices/types";
+import { Invoices } from "@/services/rest/file-invoices/types";
 
 const style = {
 	position: "absolute",

@@ -1,4 +1,4 @@
-import { useDeleteInvoice } from "@/services/rest/invoices/mutation";
+import { useDeleteInvoice } from "@/services/rest/file-invoices/mutation";
 import { useDeleteUser } from "@/services/rest/users/mutation";
 import {
 	Box,

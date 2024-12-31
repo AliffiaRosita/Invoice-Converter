@@ -1,48 +1,51 @@
-"use client";
 import { AxiosResponse } from "axios";
-import {
-	ResponseDownloadInvoice,
-	ResponseGenerateInvoice,
-	ResponseGetInvoices,
-} from "./types";
-import {
-	DeleteInvoice,
-	DownloadInvoice,
-	GenerateInvoice,
-	GetInvoices,
-	UploadInvoice,
-} from "./request";
 import { useMutation } from "react-query";
+import {
+	RequestUpdateInvoice,
+	ResponseGetInvoices,
+	ResponseInvoiceById,
+	ResponsePdfInvoice,
+	ResponseXlsInvoice,
+} from "./type";
+import {
+	DownloadPdfInvoice,
+	DownloadXlsInvoice,
+	GetInvoiceById,
+	GetInvoices,
+	UpdateInvoice,
+} from "./request";
 
 export const useGetInvoices = () =>
 	useMutation({
 		mutationFn: async (): Promise<AxiosResponse<ResponseGetInvoices>> =>
 			await GetInvoices(),
 	});
-export const useGenerateInvoice = () =>
-	useMutation<AxiosResponse<ResponseGenerateInvoice>, Error, string>({
-		mutationFn: async (id: string) => GenerateInvoice(id),
+export const useDownloadXlsInvoice = () =>
+	useMutation<AxiosResponse, Error, string>({
+		mutationFn: async (id): Promise<AxiosResponse<ResponseXlsInvoice>> =>
+			await DownloadXlsInvoice(id),
 	});
 
-export const useDownloadInvoice = () =>
-	useMutation({
+export const useDownloadPdfInvoice = () =>
+	useMutation<AxiosResponse, Error, string>({
+		mutationFn: async (id): Promise<AxiosResponse<ResponsePdfInvoice>> =>
+			await DownloadPdfInvoice(id),
+	});
+
+export const useGetInvoiceById = () =>
+	useMutation<AxiosResponse, Error, string>({
 		mutationFn: async (
 			id: string
-		): Promise<AxiosResponse<ResponseDownloadInvoice>> =>
-			await DownloadInvoice(id),
+		): Promise<AxiosResponse<ResponseInvoiceById>> =>
+			await GetInvoiceById(id),
 	});
 
-export const useDeleteInvoice = () =>
-	useMutation({
-		mutationFn: async (
-			id: string
-		): Promise<AxiosResponse<ResponseGetInvoices>> =>
-			await DeleteInvoice(id),
-	});
-
-export const useUploadInvoice = () =>
-	useMutation<AxiosResponse, Error, FormData>({
-		mutationFn: async (formData: FormData): Promise<AxiosResponse> => {
-			return UploadInvoice(formData);
-		},
+export const useUpdateInvoice = () =>
+	useMutation<
+		AxiosResponse,
+		Error,
+		{ data: RequestUpdateInvoice; id: string }
+	>({
+		mutationFn: async ({ data, id }): Promise<AxiosResponse> =>
+			await UpdateInvoice(data, id),
 	});

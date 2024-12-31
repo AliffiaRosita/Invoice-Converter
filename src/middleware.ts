@@ -12,4 +12,9 @@ export default withAuth(mainMiddleware, [
 	"/user",
 	"/user/create",
 	"/user/edit/:id",
+	"/items",
+	"/items/:id",
+	"/items/edit/:id",
+	"/invoice",
+	"/invoice/edit/:id",
 ]);
