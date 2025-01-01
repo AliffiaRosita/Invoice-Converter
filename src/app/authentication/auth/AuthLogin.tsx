@@ -65,7 +65,7 @@ const AuthLogin = ({
 				setErrorMessage(res.error);
 			} else {
 				setIsSubmitting(false);
-				push("/");
+				window.location.href = "/";
 			}
 		} catch (error) {
 			console.error(error);
