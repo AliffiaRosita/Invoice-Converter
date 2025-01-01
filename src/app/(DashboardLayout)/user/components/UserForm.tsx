@@ -43,13 +43,12 @@ const UserForm = ({ id, mode, data }: Props) => {
 			enableReinitialize
 			validationSchema={formValidationSchema}
 			onSubmit={(values, { setSubmitting }) => {
-				const data = {
-					email: values.email,
-					password: values.password,
-					name: values.name,
-					role: values.role,
-				};
 				if (mode === "edit") {
+					const data = {
+						email: values.email,
+						name: values.name,
+						role: values.role,
+					};
 					mutationUpdateUser.mutate(
 						{ id, data },
 						{
@@ -63,6 +62,12 @@ const UserForm = ({ id, mode, data }: Props) => {
 						}
 					);
 				} else {
+					const data = {
+						email: values.email,
+						password: values.password,
+						name: values.name,
+						role: values.role,
+					};
 					mutationCreateUser.mutate(data, {
 						onSuccess: () => {
 							setSubmitting(false);
@@ -101,13 +106,16 @@ const UserForm = ({ id, mode, data }: Props) => {
 						label="Email"
 						sx={{ marginBottom: "20px" }}
 					/>
-					<Field
-						component={TextField}
-						type="password"
-						label="Password"
-						name="password"
-						sx={{ marginBottom: "20px" }}
-					/>
+					{mode === "create" && (
+						<Field
+							component={TextField}
+							type="password"
+							label="Password"
+							name="password"
+							sx={{ marginBottom: "20px" }}
+						/>
+					)}
+
 					<Field
 						component={Select}
 						id="role"

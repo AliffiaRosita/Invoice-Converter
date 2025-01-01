@@ -55,7 +55,7 @@ const Items = () => {
 				const url = window.URL.createObjectURL(data.data);
 				const a = document.createElement("a");
 				a.href = url;
-				a.download = "exported_items.xlsx";
+				a.download = `${Date.now()}_items.xlsx`;
 				a.click();
 			},
 			onError: (error) => {

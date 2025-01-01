@@ -67,6 +67,7 @@ const Invoice = () => {
 						subtotal: invoice.subtotal,
 						tax: invoice.tax,
 						total: invoice.total,
+						fileUrl: invoice.file_url,
 					};
 				});
 				setTableData(invoices);
@@ -80,7 +81,7 @@ const Invoice = () => {
 				const url = window.URL.createObjectURL(new Blob([data.data]));
 				const link = document.createElement("a");
 				link.href = url;
-				link.download = "invoice.xlsx";
+				link.download = `${Date.now()}_invoice.xlsx`;
 				link.click();
 			},
 			onError: (error: any) => {
@@ -89,13 +90,18 @@ const Invoice = () => {
 		});
 	};
 
-	const handleDownloadPdf = (id: any) => {
+	const handleDownloadPdf = (id: any, fileUrl: string) => {
+		const result = fileUrl.substring(
+			fileUrl.indexOf("/output") + "/output".length
+		);
+		const fileName = result.slice(1);
+
 		mutationDownloadPdf.mutate(id, {
 			onSuccess: (data: any) => {
 				const url = window.URL.createObjectURL(new Blob([data.data]));
 				const link = document.createElement("a");
 				link.href = url;
-				link.download = "invoice.pdf";
+				link.download = fileName;
 				link.click();
 			},
 			onError: (error: any) => {
@@ -129,7 +135,7 @@ const Invoice = () => {
 					aria-label="Download"
 					color="primary"
 					onClick={() => {
-						handleDownloadPdf(row?.id);
+						handleDownloadPdf(row?.id, row?.fileUrl);
 					}}
 				>
 					<IconFileTypePdf />

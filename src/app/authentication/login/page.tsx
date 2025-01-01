@@ -17,7 +17,7 @@ import AuthLogin from "../auth/AuthLogin";
 import { IconX } from "@tabler/icons-react";
 import React from "react";
 
-const Login2 = ({ searchParams }: any) => {
+const Login2 = () => {
 	const [open, setOpen] = React.useState(false);
 	const [errorMessage, setErrorMessage] = React.useState("");
 	return (
@@ -101,7 +101,6 @@ const Login2 = ({ searchParams }: any) => {
 								<Logo />
 							</Box>
 							<AuthLogin
-								searchParams={searchParams}
 								subtext={
 									<Typography
 										variant="subtitle1"

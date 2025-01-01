@@ -149,7 +149,7 @@ const Report = () => {
 				const url = window.URL.createObjectURL(data.data);
 				const a = document.createElement("a");
 				a.href = url;
-				a.download = "invoice.xlsx";
+				a.download = `${Date.now()}_file_invoice.pdf`;
 				a.click();
 			},
 			onError: (error: any) => {

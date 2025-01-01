@@ -7,6 +7,7 @@ import {
 	Collapse,
 	Alert,
 	IconButton,
+	CircularProgress,
 } from "@mui/material";
 import Link from "next/link";
 
@@ -20,7 +21,6 @@ interface loginType {
 	title?: string;
 	subtitle?: JSX.Element | JSX.Element[];
 	subtext?: JSX.Element | JSX.Element[];
-	searchParams?: any;
 	setErrorModal?: any;
 	setErrorMessage?: any;
 }
@@ -29,7 +29,6 @@ const AuthLogin = ({
 	title,
 	subtitle,
 	subtext,
-	searchParams,
 	setErrorModal,
 	setErrorMessage,
 }: loginType) => {
@@ -37,30 +36,36 @@ const AuthLogin = ({
 	const [password, setPassword] = React.useState("");
 	const [errorEmail, setErrorEmail] = React.useState(false);
 	const [errorPassword, setErrorPassword] = React.useState(false);
+	const [isSubmitting, setIsSubmitting] = React.useState(false);
 	const { push } = useRouter();
-	const callbackUrl = searchParams?.callbackUrl || "/";
+	// const callbackUrl = searchParams?.callbackUrl || "/";
 	const handleSignIn = async (event: any) => {
+		setIsSubmitting(true);
 		event.preventDefault();
 
 		try {
 			if (!email) {
 				setErrorEmail(true);
+				setIsSubmitting(false);
 				return;
 			} else if (!password) {
 				setErrorPassword(true);
+				setIsSubmitting(false);
 				return;
 			}
 			const res = await signIn("credentials", {
 				redirect: false,
 				email: email,
 				password: password,
-				callbackUrl: callbackUrl,
+				// callbackUrl: callbackUrl,
 			});
 			if (res?.error) {
+				setIsSubmitting(false);
 				setErrorModal(true);
 				setErrorMessage(res.error);
 			} else {
-				push(callbackUrl);
+				setIsSubmitting(false);
+				push("/");
 			}
 		} catch (error) {
 			console.error(error);
@@ -147,18 +152,30 @@ const AuthLogin = ({
       </Stack> */}
 			</Stack>
 			<Box>
-				<Button
-					color="primary"
-					variant="contained"
-					size="large"
-					fullWidth
-					component={Link}
-					href="#"
-					sx={{ mt: 3 }}
-					onClick={(e) => handleSignIn(e)}
-				>
-					Sign In
-				</Button>
+				{isSubmitting ? (
+					<Box
+						sx={{
+							display: "flex",
+							justifyContent: "center",
+							mt: 3,
+						}}
+					>
+						<CircularProgress size={20} />
+					</Box>
+				) : (
+					<Button
+						color="primary"
+						variant="contained"
+						size="large"
+						fullWidth
+						component={Link}
+						href="#"
+						sx={{ mt: 3 }}
+						onClick={(e) => handleSignIn(e)}
+					>
+						Sign In
+					</Button>
+				)}
 			</Box>
 			{subtitle}
 		</>
