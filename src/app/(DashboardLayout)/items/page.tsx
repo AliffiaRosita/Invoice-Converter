@@ -17,7 +17,9 @@ const Items = () => {
 	const [tableData, setTableData] = React.useState<any[]>([]);
 	const router = useRouter();
 	const columns = [
-		{ field: "id", headerName: "ID", width: 70 },
+		{ field: "invoiceNumber", headerName: "Invoice Number", width: 150 },
+		{ field: "senderName", headerName: "Sender Name", width: 200 },
+		{ field: "tax", headerName: "Tax", width: 100 },
 		{ field: "description", headerName: "Description", width: 670 },
 		{ field: "price", headerName: "Price", width: 100 },
 		{ field: "quantity", headerName: "Quantity", width: 100 },
@@ -36,6 +38,9 @@ const Items = () => {
 				const items = response.map((item: Item) => {
 					return {
 						id: item.id,
+						invoiceNumber: item.invoice_number,
+						senderName: item.sender_name,
+						tax: item.tax || 0,
 						description: item.description,
 						price: item.price,
 						quantity: item.quantity || 0,

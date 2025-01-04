@@ -16,6 +16,7 @@ import {
 	IconPencil,
 } from "@tabler/icons-react";
 import Link from "next/link";
+import moment from "moment-timezone";
 
 const Invoice = () => {
 	const mutationGetInvoices = useGetInvoices();
@@ -44,6 +45,8 @@ const Invoice = () => {
 		{ field: "subtotal", headerName: "Subtotal", width: 150 },
 		{ field: "tax", headerName: "Tax", width: 150 },
 		{ field: "total", headerName: "Total", width: 150 },
+		{ field: "invoiceDate", headerName: "Invoice Date", width: 200 },
+		{ field: "createdDate", headerName: "Created Date", width: 200 },
 		{
 			field: "actions",
 			headerName: "Actions",
@@ -56,7 +59,8 @@ const Invoice = () => {
 		mutationGetInvoices.mutate(undefined, {
 			onSuccess: (data) => {
 				const response = data.data.data;
-				const invoices = response.map((invoice) => {
+
+				const invoices = response.map((invoice: any) => {
 					return {
 						id: invoice.id,
 						invoiceNumber: invoice.invoice_number,
@@ -68,6 +72,12 @@ const Invoice = () => {
 						tax: invoice.tax,
 						total: invoice.total,
 						fileUrl: invoice.file_url,
+						invoiceDate: moment
+							.tz(invoice.invoice_date, "Asia/Jakarta")
+							.format("LL"),
+						createdDate: moment
+							.tz(invoice.created_at, "Asia/Jakarta")
+							.format("LL"),
 					};
 				});
 				setTableData(invoices);

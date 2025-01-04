@@ -10,8 +10,10 @@ import { useGetUsers } from "@/services/rest/users/mutation";
 import moment from "moment-timezone";
 import ModalDeleteDialog from "./components/ModalDeleteDialog";
 import { Users } from "@/services/rest/users/type";
+import { useSession } from "next-auth/react";
 
 const User = () => {
+	const { data: session }: any = useSession();
 	const [tableData, setTableData] = React.useState([]);
 	const mutationGetUsers = useGetUsers();
 	const router = useRouter();
@@ -59,9 +61,12 @@ const User = () => {
 						name: user.name,
 						role: user.role,
 						email: user.email,
-						lastLoginAt: moment
-							.tz(user.last_login_at, "Asia/Jakarta")
-							.format("lll"),
+						lastLoginAt:
+							user.last_login_at !== null
+								? moment
+										.tz(user.last_login_at, "Asia/Jakarta")
+										.format("lll")
+								: "",
 					};
 				});
 				setTableData(users);
@@ -84,15 +89,18 @@ const User = () => {
 					flexDirection: "row",
 				}}
 			>
-				<IconButton
-					aria-label="delete"
-					color="error"
-					onClick={() => {
-						setDeleteData({ id: row?.id, dialogOpen: true });
-					}}
-				>
-					<IconTrash />
-				</IconButton>
+				{session.user.id !== row?.id && (
+					<IconButton
+						aria-label="delete"
+						color="error"
+						onClick={() => {
+							setDeleteData({ id: row?.id, dialogOpen: true });
+						}}
+					>
+						<IconTrash />
+					</IconButton>
+				)}
+
 				<IconButton
 					aria-label="edit"
 					color="primary"

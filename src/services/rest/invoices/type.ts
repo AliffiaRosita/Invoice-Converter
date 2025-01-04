@@ -3,6 +3,7 @@ export type Invoice = {
 	file_invoice_id: number;
 	invoice_number: string;
 	receiver_name: string;
+	invoice_date: string;
 	receiver_address: string;
 	sender_name: string;
 	sender_address: string;

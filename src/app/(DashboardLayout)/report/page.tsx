@@ -35,8 +35,9 @@ import {
 	useGetInvoices,
 	useUploadInvoice,
 } from "@/services/rest/file-invoices/mutation";
-import { on } from "events";
+
 import { Invoices } from "@/services/rest/file-invoices/types";
+import { useSession } from "next-auth/react";
 
 const style = {
 	position: "absolute",
@@ -54,6 +55,7 @@ interface Values {
 	password: string;
 }
 const Report = () => {
+	const { data: session }: any = useSession();
 	const [open, setOpen] = React.useState(false);
 	const handleOpen = () => setOpen(true);
 	const handleClose = () => setOpen(false);
@@ -267,13 +269,16 @@ const Report = () => {
 								Success generating report !
 							</Alert>
 						</Collapse>
-						<Button
-							onClick={handleOpen}
-							variant="contained"
-							sx={{ mb: 2 }}
-						>
-							Upload File
-						</Button>
+						{session?.user?.role === "admin" && (
+							<Button
+								onClick={handleOpen}
+								variant="contained"
+								sx={{ mb: 2 }}
+							>
+								Upload File
+							</Button>
+						)}
+
 						<Modal
 							aria-labelledby="transition-modal-title"
 							aria-describedby="transition-modal-description"

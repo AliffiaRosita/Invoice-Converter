@@ -3,6 +3,9 @@ export type Item = {
 	file_invoice_id: number;
 	description: string;
 	quantity: number | null;
+	invoice_number: string;
+	tax: number | null;
+	sender_name: string;
 	price: number;
 	created_at: string;
 	updated_at: string;
