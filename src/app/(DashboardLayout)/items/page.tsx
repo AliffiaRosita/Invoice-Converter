@@ -10,26 +10,69 @@ import { IconFileTypeXls } from "@tabler/icons-react";
 import { IconPencil } from "@tabler/icons-react";
 import { useRouter } from "next/navigation";
 import { Item } from "@/services/rest/items/types";
+import {
+	MaterialReactTable,
+	useMaterialReactTable,
+	type MRT_ColumnDef,
+} from "material-react-table";
 
 const Items = () => {
 	const mutationGetItem = useGetItems();
 	const mutationDownloadItem = useDownloadItem();
 	const [tableData, setTableData] = React.useState<any[]>([]);
 	const router = useRouter();
-	const columns = [
-		{ field: "invoiceNumber", headerName: "Invoice Number", width: 150 },
-		{ field: "senderName", headerName: "Sender Name", width: 200 },
-		{ field: "tax", headerName: "Tax", width: 100 },
-		{ field: "description", headerName: "Description", width: 670 },
-		{ field: "price", headerName: "Price", width: 100 },
-		{ field: "quantity", headerName: "Quantity", width: 100 },
-		{
-			field: "actions",
-			headerName: "Actions",
-			width: 130,
-			renderCell: (params: any) => renderActionButton(params.row),
-		},
-	];
+
+	const columns = React.useMemo<MRT_ColumnDef<Item>[]>(
+		() => [
+			{
+				accessorKey: "invoiceNumber",
+				header: "Invoice Number",
+				size: 150,
+			},
+			{
+				accessorKey: "senderName",
+				header: "Sender Name",
+				size: 200,
+			},
+			{
+				accessorKey: "tax",
+				header: "Tax",
+				size: 100,
+			},
+			{
+				accessorKey: "description",
+				header: "Description",
+				size: 400,
+			},
+			{
+				accessorKey: "price",
+				header: "Price",
+				size: 100,
+			},
+			{
+				accessorKey: "quantity",
+				header: "Quantity",
+				size: 100,
+			},
+			{
+				accessorKey: "actions",
+				header: "Actions",
+				size: 130,
+				Cell: ({ row }) => renderActionButton(row.original),
+			},
+		],
+		[]
+	);
+	const table = useMaterialReactTable({
+		columns,
+		data: tableData,
+		enableColumnResizing: true,
+		enableGlobalFilter: true,
+		enablePagination: true,
+		enableSorting: true,
+		enableFullScreenToggle: false,
+		enableDensityToggle: false,
+	});
 
 	const getItems = async () => {
 		mutationGetItem.mutate(undefined, {
@@ -106,7 +149,8 @@ const Items = () => {
 						<IconFileTypeXls />
 						Export
 					</Button>
-					<DataGrid rows={tableData} columns={columns} />
+
+					<MaterialReactTable table={table} />
 				</>
 			</DashboardCard>
 		</PageContainer>

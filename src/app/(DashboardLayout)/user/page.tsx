@@ -11,6 +11,11 @@ import moment from "moment-timezone";
 import ModalDeleteDialog from "./components/ModalDeleteDialog";
 import { Users } from "@/services/rest/users/type";
 import { useSession } from "next-auth/react";
+import {
+	MaterialReactTable,
+	useMaterialReactTable,
+	type MRT_ColumnDef, //if using TypeScript (optional, but recommended)
+} from "material-react-table";
 
 const User = () => {
 	const { data: session }: any = useSession();
@@ -21,35 +26,49 @@ const User = () => {
 		id: "",
 		dialogOpen: false,
 	});
-	const columns = [
-		{
-			field: "name",
-			headerName: "Name",
-			width: 390,
-		},
-		{
-			field: "role",
-			headerName: "Role",
-			width: 100,
-		},
-		{
-			field: "email",
-			headerName: "Email",
-			width: 200,
-		},
-		{
-			field: "lastLoginAt",
-			headerName: "Last Login",
-			width: 200,
-		},
-		{
-			field: "actions",
-			headerName: "Actions",
-			width: 100,
-			sortable: false,
-			renderCell: (params: any) => renderActionButton(params.row),
-		},
-	];
+
+	const columns = React.useMemo<MRT_ColumnDef<Users>[]>(
+		() => [
+			{
+				accessorKey: "name",
+				header: "Name",
+				size: 390,
+			},
+			{
+				accessorKey: "role",
+				header: "Role",
+				size: 100,
+			},
+			{
+				accessorKey: "email",
+				header: "Email",
+				size: 200,
+			},
+			{
+				accessorKey: "lastLoginAt",
+				header: "Last Login",
+				size: 200,
+			},
+			{
+				accessorKey: "actions",
+				header: "Actions",
+				size: 150,
+				Cell: ({ row }) => renderActionButton(row.original),
+			},
+		],
+		[]
+	);
+
+	const table = useMaterialReactTable({
+		columns,
+		data: tableData,
+		enableColumnResizing: true,
+		enableGlobalFilter: true,
+		enablePagination: true,
+		enableSorting: true,
+		enableFullScreenToggle: false,
+		enableDensityToggle: false,
+	});
 
 	async function getData() {
 		mutationGetUsers.mutate(undefined, {
@@ -89,7 +108,7 @@ const User = () => {
 					flexDirection: "row",
 				}}
 			>
-				{session.user.id !== row?.id && (
+				{session?.user?.id !== row?.id && (
 					<IconButton
 						aria-label="delete"
 						color="error"
@@ -135,7 +154,8 @@ const User = () => {
 					>
 						Add User
 					</Button>
-					<DataGrid rows={tableData} columns={columns} />
+
+					<MaterialReactTable table={table} />
 				</>
 			</DashboardCard>
 		</PageContainer>

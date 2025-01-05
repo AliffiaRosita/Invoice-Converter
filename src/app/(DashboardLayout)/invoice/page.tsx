@@ -17,6 +17,12 @@ import {
 } from "@tabler/icons-react";
 import Link from "next/link";
 import moment from "moment-timezone";
+import {
+	MaterialReactTable,
+	useMaterialReactTable,
+	type MRT_ColumnDef,
+} from "material-react-table";
+import type { Invoice } from "@/services/rest/invoices/type";
 
 const Invoice = () => {
 	const mutationGetInvoices = useGetInvoices();
@@ -25,35 +31,78 @@ const Invoice = () => {
 	const [tableData, setTableData] = React.useState<any[]>([]);
 
 	const router = useRouter();
-	const columns = [
-		{
-			field: "invoiceNumber",
-			headerName: "Invoice Number",
-			width: 200,
-			renderCell: (params: any) => (
-				<Link href={`/items/${params.row.id}`}>{params.value}</Link>
-			),
-		},
-		{ field: "receiverName", headerName: "Receiver Name", width: 300 },
-		{
-			field: "receiverAddress",
-			headerName: "Receiver Address",
-			width: 460,
-		},
-		{ field: "senderName", headerName: "Sender Name", width: 300 },
-		{ field: "senderAddress", headerName: "Sender Address", width: 460 },
-		{ field: "subtotal", headerName: "Subtotal", width: 150 },
-		{ field: "tax", headerName: "Tax", width: 150 },
-		{ field: "total", headerName: "Total", width: 150 },
-		{ field: "invoiceDate", headerName: "Invoice Date", width: 200 },
-		{ field: "createdDate", headerName: "Created Date", width: 200 },
-		{
-			field: "actions",
-			headerName: "Actions",
-			width: 200,
-			renderCell: (params: any) => renderActionButton(params.row),
-		},
-	];
+	const columns = React.useMemo<MRT_ColumnDef<Invoice>[]>(
+		() => [
+			{
+				accessorKey: "invoiceNumber",
+				header: "Invoice Number",
+				size: 200,
+			},
+			{
+				accessorKey: "receiverName",
+				header: "Receiver Name",
+				size: 300,
+			},
+			{
+				accessorKey: "receiverAddress",
+				header: "Receiver Address",
+				size: 460,
+			},
+			{
+				accessorKey: "senderName",
+				header: "Sender Name",
+				size: 300,
+			},
+			{
+				accessorKey: "senderAddress",
+				header: "Sender Address",
+				size: 460,
+			},
+			{
+				accessorKey: "subtotal",
+				header: "Subtotal",
+				size: 150,
+			},
+			{
+				accessorKey: "tax",
+				header: "Tax",
+				size: 150,
+			},
+			{
+				accessorKey: "total",
+				header: "Total",
+				size: 150,
+			},
+			{
+				accessorKey: "InvoiceDate",
+				header: "Invoice Date",
+			},
+			{
+				accessorKey: "createdDate",
+				header: "Created Date",
+				size: 200,
+			},
+			{
+				accessorKey: "actions",
+				header: "Actions",
+				size: 150,
+				enableSorting: false,
+				enableHiding: false,
+				Cell: ({ row }) => renderActionButton(row.original),
+			},
+		],
+		[]
+	);
+	const table = useMaterialReactTable({
+		columns,
+		data: tableData,
+		enableColumnResizing: true,
+		enableGlobalFilter: true,
+		enablePagination: true,
+		enableSorting: true,
+		enableFullScreenToggle: false,
+		enableDensityToggle: false,
+	});
 
 	const getInvoices = async () => {
 		mutationGetInvoices.mutate(undefined, {
@@ -167,7 +216,8 @@ const Invoice = () => {
 		<PageContainer title="Invoice" description="this is Invoice">
 			<DashboardCard title="Invoice">
 				<>
-					<DataGrid rows={tableData} columns={columns} />
+					{/* <DataGrid rows={tableData} columns={columns} /> */}
+					<MaterialReactTable table={table} />
 				</>
 			</DashboardCard>
 		</PageContainer>

@@ -9,31 +9,82 @@ import { IconPencil } from "@tabler/icons-react";
 import { useRouter } from "next/navigation";
 import { Item } from "@/services/rest/items/types";
 import { useGetInvoiceById } from "@/services/rest/invoices/mutation";
+import {
+	MaterialReactTable,
+	useMaterialReactTable,
+	type MRT_ColumnDef,
+} from "material-react-table";
+import { Invoice } from "@/services/rest/invoices/type";
 
 const InvoiceItems = ({ params }: any) => {
 	const mutationGetItem = useGetInvoiceById();
-	const [tableData, setTableData] = React.useState<any[]>([]);
+	const [tableData, setTableData] = React.useState<Invoice[]>([]);
 	const router = useRouter();
-	const columns = [
-		{ field: "id", headerName: "ID", width: 70 },
-		{ field: "description", headerName: "Description", width: 670 },
-		{ field: "price", headerName: "Price", width: 100 },
-		{ field: "quantity", headerName: "Quantity", width: 100 },
-		{
-			field: "actions",
-			headerName: "Actions",
-			width: 130,
-			renderCell: (params: any) => renderActionButton(params.row),
-		},
-	];
+
+	const columns = React.useMemo<MRT_ColumnDef<any>[]>(
+		() => [
+			{
+				accessorKey: "invoiceNumber",
+				header: "Invoice Number",
+				size: 150,
+			},
+			{
+				accessorKey: "senderName",
+				header: "Sender Name",
+				size: 200,
+			},
+			{
+				accessorKey: "tax",
+				header: "Tax",
+				size: 100,
+			},
+			{
+				accessorKey: "description",
+				header: "Description",
+				size: 400,
+			},
+			{
+				accessorKey: "price",
+				header: "Price",
+				size: 100,
+			},
+			{
+				accessorKey: "quantity",
+				header: "Quantity",
+				size: 100,
+			},
+			{
+				accessorKey: "actions",
+				header: "Actions",
+				size: 130,
+				Cell: ({ row }) => renderActionButton(row.original),
+			},
+		],
+		[]
+	);
+	const table = useMaterialReactTable({
+		columns,
+		data: tableData,
+		enableColumnResizing: true,
+		enableGlobalFilter: true,
+		enablePagination: true,
+		enableSorting: true,
+		enableFullScreenToggle: false,
+		enableDensityToggle: false,
+	});
 
 	const getItems = async () => {
 		mutationGetItem.mutate(params.invoiceId, {
 			onSuccess: (data) => {
 				const response = data.data.data.items;
+				console.log(response);
+
 				const items = response.map((item: Item) => {
 					return {
 						id: item.id,
+						invoiceNumber: item.invoice_number,
+						senderName: item.sender_name,
+						tax: item.tax || 0,
 						description: item.description,
 						price: item.price,
 						quantity: item.quantity || 0,
@@ -76,7 +127,8 @@ const InvoiceItems = ({ params }: any) => {
 		<PageContainer title="Items" description="this is Items">
 			<DashboardCard title="Items">
 				<>
-					<DataGrid rows={tableData} columns={columns} />
+					{/* <DataGrid rows={tableData} columns={columns} /> */}
+					<MaterialReactTable table={table} />
 				</>
 			</DashboardCard>
 		</PageContainer>

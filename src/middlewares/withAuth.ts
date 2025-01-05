@@ -7,7 +7,7 @@ import {
 } from "next/server";
 import { match } from "path-to-regexp";
 
-const onlyAdminPage = ["/user", "/user/create", "/user/edit/:id"];
+const onlyAdminPage = ["/user", "/user/create", "/user/edit/:id", "/report"];
 export default function withAuth(
 	middleware: NextMiddleware,
 	requireUrl: string[] = []

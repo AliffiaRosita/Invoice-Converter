@@ -20,10 +20,12 @@ const ItemForm = ({ id, mode, data }: Props) => {
 		description: string;
 		quantity: number;
 		price: number;
+		tax?: number;
 	}> = yup.object().shape({
 		description: yup.string().required(),
 		quantity: yup.number().min(1).required(),
 		price: yup.number().min(0).required(),
+		tax: yup.number().min(0),
 	});
 
 	const initialValues = useMemo(() => {
@@ -31,6 +33,7 @@ const ItemForm = ({ id, mode, data }: Props) => {
 			description: data?.description || "",
 			quantity: data?.quantity || 0,
 			price: data?.price || 0,
+			tax: data?.tax || 0,
 		};
 	}, [data]);
 	return (
@@ -43,6 +46,7 @@ const ItemForm = ({ id, mode, data }: Props) => {
 					description: values.description,
 					quantity: values.quantity,
 					price: values.price,
+					tax: values.tax,
 				};
 
 				if (mode === "edit") {
@@ -86,6 +90,13 @@ const ItemForm = ({ id, mode, data }: Props) => {
 						component={TextField}
 						name="price"
 						label="Price"
+						type="number"
+						sx={{ mb: 2 }}
+					/>
+					<Field
+						component={TextField}
+						name="tax"
+						label="Tax"
 						type="number"
 						sx={{ mb: 2 }}
 					/>

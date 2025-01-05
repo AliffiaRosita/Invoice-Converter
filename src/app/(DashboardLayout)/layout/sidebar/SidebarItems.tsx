@@ -13,7 +13,11 @@ const SidebarItems = ({ toggleMobileSidebar }: any) => {
 	const menus =
 		session?.user?.role === "admin"
 			? Menuitems
-			: Menuitems.filter((item) => !item.title.includes("Users"));
+			: Menuitems.filter(
+					(item) =>
+						!item.title.includes("Users") &&
+						!item.title.includes("File Invoice")
+			  );
 	return (
 		<Box sx={{ px: 3 }}>
 			<List sx={{ pt: 0 }} className="sidebarNav" component="div">

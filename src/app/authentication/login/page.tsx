@@ -101,16 +101,6 @@ const Login2 = () => {
 								<Logo />
 							</Box>
 							<AuthLogin
-								subtext={
-									<Typography
-										variant="subtitle1"
-										textAlign="center"
-										color="textSecondary"
-										mb={1}
-									>
-										Your Social Campaigns
-									</Typography>
-								}
 								setErrorModal={setOpen}
 								setErrorMessage={setErrorMessage}
 							/>

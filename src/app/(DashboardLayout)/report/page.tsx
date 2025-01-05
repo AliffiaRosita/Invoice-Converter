@@ -8,6 +8,7 @@ import {
 	Backdrop,
 	Box,
 	Button,
+	Chip,
 	CircularProgress,
 	Collapse,
 	Fade,
@@ -28,7 +29,7 @@ import {
 import moment from "moment-timezone";
 
 import ModalDeleteDialog from "./components/ModalDeleteDialog";
-import { DataGrid } from "@mui/x-data-grid";
+import { DataGrid, GridToolbarQuickFilter } from "@mui/x-data-grid";
 import {
 	useDownloadInvoice,
 	useGenerateInvoice,
@@ -36,8 +37,15 @@ import {
 	useUploadInvoice,
 } from "@/services/rest/file-invoices/mutation";
 
-import { Invoices } from "@/services/rest/file-invoices/types";
 import { useSession } from "next-auth/react";
+import { Invoice } from "@/services/rest/invoices/type";
+
+import {
+	MaterialReactTable,
+	useMaterialReactTable,
+	type MRT_ColumnDef,
+} from "material-react-table";
+import type { Report } from "@/services/rest/file-invoices/types";
 
 const style = {
 	position: "absolute",
@@ -55,7 +63,6 @@ interface Values {
 	password: string;
 }
 const Report = () => {
-	const { data: session }: any = useSession();
 	const [open, setOpen] = React.useState(false);
 	const handleOpen = () => setOpen(true);
 	const handleClose = () => setOpen(false);
@@ -123,7 +130,7 @@ const Report = () => {
 			onSuccess: (data: any) => {
 				const response = data.data;
 
-				const invoices = response.data.map((item: Invoices) => {
+				const invoices = response.data.map((item: Report) => {
 					return {
 						id: item.id,
 						name: item.name,
@@ -134,7 +141,8 @@ const Report = () => {
 							.tz(item.created_at, "Asia/Jakarta")
 							.format("LT"),
 						isGenerated: !!item.generated_url,
-						isGenerating: false,
+						isGenerating: item.generate_status === "processing",
+						generateStatus: item.generate_status,
 					};
 				});
 				setTableData(invoices);
@@ -162,32 +170,99 @@ const Report = () => {
 
 	React.useEffect(() => {
 		getData();
+		const hasGeneratingData = tableData.some(
+			(item: any) => item.isGenerating
+		);
+
+		let intervalId: any;
+
+		if (hasGeneratingData) {
+			intervalId = setInterval(() => {
+				getData();
+			}, 100000);
+		}
+		return () => {
+			if (intervalId) {
+				clearInterval(intervalId);
+				console.log("Interval cleared");
+			}
+		};
 	}, []);
 
-	const columns = [
-		{
-			field: "name",
-			headerName: "Name",
-			width: 390,
-		},
-		{
-			field: "createdDate",
-			headerName: "Created Date",
-			width: 200,
-		},
-		{
-			field: "createdTime",
-			headerName: "Created Time",
-			width: 200,
-		},
-		{
-			field: "actions",
-			headerName: "Actions",
-			width: 300,
-			sortable: false,
-			renderCell: (params: any) => renderActionButton(params.row),
-		},
-	];
+	const columns2 = React.useMemo<MRT_ColumnDef<Invoice>[]>(
+		() => [
+			{
+				accessorKey: "name",
+				header: "Name",
+				size: 300,
+			},
+			{
+				accessorKey: "createdDate",
+				header: "Uploaded Date",
+				size: 200,
+			},
+			{
+				accessorKey: "createdTime",
+				header: "Uploaded Time",
+				size: 200,
+			},
+			{
+				accessorKey: "status",
+				header: "Generate Status",
+				Cell: ({ row }) => renderStatus(row.original),
+			},
+			{
+				accessorKey: "actions",
+				header: "Actions",
+				Cell: ({ row }) => renderActionButton(row.original),
+			},
+		],
+		[]
+	);
+
+	const table = useMaterialReactTable({
+		columns: columns2,
+		data: tableData,
+		enableColumnResizing: true,
+		enableGlobalFilter: true,
+		enablePagination: true,
+		enableSorting: true,
+		enableFullScreenToggle: false,
+		enableDensityToggle: false,
+	});
+
+	const renderStatus = (row: any) => {
+		return (
+			<Box
+				sx={{
+					display: "flex",
+					flexDirection: "row",
+				}}
+			>
+				{row?.isGenerated ? (
+					<Chip
+						label={row.generateStatus}
+						variant="outlined"
+						color={
+							row.generateStatus === "failed"
+								? "error"
+								: "success"
+						}
+					/>
+				) : row?.isGenerating ? (
+					<Box sx={{ display: "flex", alignItems: "center" }}>
+						<Chip label={"Processing"} variant="outlined" />
+					</Box>
+				) : (
+					<Chip
+						label={row.generateStatus}
+						variant="outlined"
+						color="primary"
+					/>
+				)}
+			</Box>
+		);
+	};
 
 	const renderActionButton = (row: any) => {
 		return (
@@ -269,15 +344,13 @@ const Report = () => {
 								Success generating report !
 							</Alert>
 						</Collapse>
-						{session?.user?.role === "admin" && (
-							<Button
-								onClick={handleOpen}
-								variant="contained"
-								sx={{ mb: 2 }}
-							>
-								Upload File
-							</Button>
-						)}
+						<Button
+							onClick={handleOpen}
+							variant="contained"
+							sx={{ mb: 2 }}
+						>
+							Upload File
+						</Button>
 
 						<Modal
 							aria-labelledby="transition-modal-title"
@@ -380,7 +453,8 @@ const Report = () => {
 							</Fade>
 						</Modal>
 					</div>
-					<DataGrid rows={tableData} columns={columns} />
+					{/* <DataGrid rows={tableData} columns={columns} /> */}
+					<MaterialReactTable table={table} />
 				</div>
 			</DashboardCard>
 		</PageContainer>

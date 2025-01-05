@@ -5,6 +5,7 @@ import CssBaseline from "@mui/material/CssBaseline";
 import "./global.css";
 import ReactQueryProvider from "@/providers/ReactQueryProvider";
 import { Provider } from "@/providers/Provider";
+
 export default function RootLayout({
 	children,
 }: {
