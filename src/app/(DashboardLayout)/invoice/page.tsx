@@ -22,9 +22,9 @@ import {
 	useMaterialReactTable,
 	type MRT_ColumnDef,
 } from "material-react-table";
-import type { Invoice } from "@/services/rest/invoices/type";
+import { Invoice } from "@/services/rest/invoices/type";
 
-const Invoice = () => {
+const InvoicePage = () => {
 	const mutationGetInvoices = useGetInvoices();
 	const mutationDownloadXls = useDownloadXlsInvoice();
 	const mutationDownloadPdf = useDownloadPdfInvoice();
@@ -224,4 +224,4 @@ const Invoice = () => {
 	);
 };
 
-export default Invoice;
+export default InvoicePage;

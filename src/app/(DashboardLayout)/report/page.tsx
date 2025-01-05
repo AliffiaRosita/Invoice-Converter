@@ -29,7 +29,6 @@ import {
 import moment from "moment-timezone";
 
 import ModalDeleteDialog from "./components/ModalDeleteDialog";
-import { DataGrid, GridToolbarQuickFilter } from "@mui/x-data-grid";
 import {
 	useDownloadInvoice,
 	useGenerateInvoice,
@@ -37,15 +36,12 @@ import {
 	useUploadInvoice,
 } from "@/services/rest/file-invoices/mutation";
 
-import { useSession } from "next-auth/react";
-import { Invoice } from "@/services/rest/invoices/type";
-
 import {
 	MaterialReactTable,
 	useMaterialReactTable,
 	type MRT_ColumnDef,
 } from "material-react-table";
-import type { Report } from "@/services/rest/file-invoices/types";
+import { Report } from "@/services/rest/file-invoices/types";
 
 const style = {
 	position: "absolute",
@@ -62,7 +58,7 @@ interface Values {
 	email: string;
 	password: string;
 }
-const Report = () => {
+const ReportPage = () => {
 	const [open, setOpen] = React.useState(false);
 	const handleOpen = () => setOpen(true);
 	const handleClose = () => setOpen(false);
@@ -189,7 +185,7 @@ const Report = () => {
 		};
 	}, []);
 
-	const columns2 = React.useMemo<MRT_ColumnDef<Invoice>[]>(
+	const columns2 = React.useMemo<MRT_ColumnDef<Report>[]>(
 		() => [
 			{
 				accessorKey: "name",
@@ -461,4 +457,4 @@ const Report = () => {
 	);
 };
 
-export default Report;
+export default ReportPage;
