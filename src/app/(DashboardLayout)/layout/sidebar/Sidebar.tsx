@@ -71,7 +71,7 @@ const MSidebar = ({
 							{/* Logo */}
 							{/* ------------------------------------------- */}
 							<Logo
-								img="/images/logos/Logo.png"
+								img="/images/logos/LOGO.png"
 								height={45}
 								width={180}
 							/>
@@ -120,7 +120,7 @@ const MSidebar = ({
 					{/* Logo */}
 					{/* ------------------------------------------- */}
 					<Logo
-						img="/images/logos/Logo.png"
+						img="/images/logos/LOGO.png"
 						height={45}
 						width={180}
 					/>
