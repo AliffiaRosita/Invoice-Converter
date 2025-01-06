@@ -103,6 +103,7 @@ const ReportPage = () => {
 	const generateFile = async (id: any) => {
 		mutationGenerateInvoice.mutate(id, {
 			onSuccess: (data: any) => {
+				const response = data.data;
 				setTableData((prevTableData: any) => {
 					return prevTableData.map((item: any) => {
 						if (item.id === id) {
@@ -110,6 +111,7 @@ const ReportPage = () => {
 								...item,
 								isGenerating: false,
 								isGenerated: true,
+								generateStatus: response.data.generate_status,
 							};
 						}
 						return item;

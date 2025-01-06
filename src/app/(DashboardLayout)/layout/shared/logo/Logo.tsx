@@ -13,7 +13,7 @@ const Logo = () => {
 	return (
 		<LinkStyled href="/" sx={{ marginBottom: "2rem" }}>
 			<Image
-				src="/images/logos/logo.png"
+				src="/images/logos/Logo.png"
 				alt="logo"
 				height={70}
 				width={174}

@@ -2,7 +2,7 @@
 import React from "react";
 import PageContainer from "../components/container/PageContainer";
 import DashboardCard from "../components/shared/DashboardCard";
-import { DataGrid } from "@mui/x-data-grid";
+
 import {
 	useDownloadPdfInvoice,
 	useDownloadXlsInvoice,
@@ -15,7 +15,6 @@ import {
 	IconFileTypeXls,
 	IconPencil,
 } from "@tabler/icons-react";
-import Link from "next/link";
 import moment from "moment-timezone";
 import {
 	MaterialReactTable,
@@ -74,12 +73,12 @@ const InvoicePage = () => {
 				size: 150,
 			},
 			{
-				accessorKey: "InvoiceDate",
+				accessorKey: "invoiceDate",
 				header: "Invoice Date",
 			},
 			{
 				accessorKey: "createdDate",
-				header: "Created Date",
+				header: "Uploaded Date",
 				size: 200,
 			},
 			{
@@ -121,9 +120,15 @@ const InvoicePage = () => {
 						tax: invoice.tax,
 						total: invoice.total,
 						fileUrl: invoice.file_url,
-						invoiceDate: moment
-							.tz(invoice.invoice_date, "Asia/Jakarta")
-							.format("LL"),
+						invoiceDate:
+							invoice.invoice_date !== null
+								? moment
+										.tz(
+											invoice.invoice_date,
+											"Asia/Jakarta"
+										)
+										.format("LL")
+								: "",
 						createdDate: moment
 							.tz(invoice.created_at, "Asia/Jakarta")
 							.format("LL"),

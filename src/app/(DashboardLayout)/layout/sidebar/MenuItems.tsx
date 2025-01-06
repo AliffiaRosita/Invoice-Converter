@@ -86,9 +86,9 @@ const Menuitems = [
 	},
 	{
 		id: uniqueId(),
-		title: "Users",
-		icon: IconUser,
-		href: "/user",
+		title: "Invoices",
+		icon: IconFileAnalytics,
+		href: "/invoice",
 	},
 	{
 		id: uniqueId(),
@@ -98,9 +98,9 @@ const Menuitems = [
 	},
 	{
 		id: uniqueId(),
-		title: "Invoices",
-		icon: IconFileAnalytics,
-		href: "/invoice",
+		title: "Users",
+		icon: IconUser,
+		href: "/user",
 	},
 ];
 

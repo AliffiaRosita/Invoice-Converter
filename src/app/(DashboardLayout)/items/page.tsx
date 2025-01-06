@@ -35,25 +35,26 @@ const Items = () => {
 				size: 200,
 			},
 			{
-				accessorKey: "tax",
-				header: "Tax",
-				size: 100,
-			},
-			{
 				accessorKey: "description",
 				header: "Description",
 				size: 400,
-			},
-			{
-				accessorKey: "price",
-				header: "Price",
-				size: 100,
 			},
 			{
 				accessorKey: "quantity",
 				header: "Quantity",
 				size: 100,
 			},
+			{
+				accessorKey: "tax",
+				header: "Tax",
+				size: 100,
+			},
+			{
+				accessorKey: "price",
+				header: "Price",
+				size: 100,
+			},
+
 			{
 				accessorKey: "actions",
 				header: "Actions",
