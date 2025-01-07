@@ -126,15 +126,7 @@ const InvoicePage = () => {
 						tax: invoice.tax,
 						total: invoice.total,
 						fileUrl: invoice.file_url,
-						invoiceDate:
-							invoice.invoice_date !== null
-								? moment
-										.tz(
-											invoice.invoice_date,
-											"Asia/Jakarta"
-										)
-										.format("LL")
-								: "",
+						invoiceDate: invoice.invoice_date,
 						createdDate: moment
 							.tz(invoice.created_at, "Asia/Jakarta")
 							.format("LL"),
