@@ -22,6 +22,7 @@ import {
 	type MRT_ColumnDef,
 } from "material-react-table";
 import { Invoice } from "@/services/rest/invoices/type";
+import Link from "next/link";
 
 const InvoicePage = () => {
 	const mutationGetInvoices = useGetInvoices();
@@ -36,6 +37,11 @@ const InvoicePage = () => {
 				accessorKey: "invoiceNumber",
 				header: "Invoice Number",
 				size: 200,
+				Cell: ({ row }: any) => (
+					<Link href={`/items/${row.original.id}`}>
+						{row.original.invoiceNumber}
+					</Link>
+				),
 			},
 			{
 				accessorKey: "receiverName",

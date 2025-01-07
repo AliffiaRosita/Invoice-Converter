@@ -23,6 +23,7 @@ import {
 	IconDownload,
 	IconFileTypeXls,
 	IconLoader,
+	IconSettingsAutomation,
 	IconTrash,
 	IconX,
 } from "@tabler/icons-react";
@@ -42,6 +43,7 @@ import {
 	type MRT_ColumnDef,
 } from "material-react-table";
 import { Report } from "@/services/rest/file-invoices/types";
+import { blue } from "@mui/material/colors";
 
 const style = {
 	position: "absolute",
@@ -289,8 +291,31 @@ const ReportPage = () => {
 						onClick={() => {
 							handleGenerate(row?.id);
 						}}
+						sx={{
+							position: "relative",
+							"&::before": {
+								content: '""',
+								position: "absolute",
+								width: "70%",
+								height: "70%",
+								borderRadius: "50%",
+								backgroundColor: blue[100],
+								animation: "pulse 1.5s infinite",
+								zIndex: -1,
+							},
+							"@keyframes pulse": {
+								"0%": {
+									transform: "scale(1)",
+									opacity: 1,
+								},
+								"100%": {
+									transform: "scale(2)",
+									opacity: 0,
+								},
+							},
+						}}
 					>
-						<IconFileTypeXls />
+						<IconSettingsAutomation />
 					</IconButton>
 				)}
 

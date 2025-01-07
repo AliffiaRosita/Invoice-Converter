@@ -77,7 +77,6 @@ const InvoiceItems = ({ params }: any) => {
 		mutationGetItem.mutate(params.invoiceId, {
 			onSuccess: (data) => {
 				const response = data.data.data.items;
-				console.log(response);
 
 				const items = response.map((item: Item) => {
 					return {
