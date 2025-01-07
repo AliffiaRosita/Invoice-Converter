@@ -77,12 +77,13 @@ const InvoiceItems = ({ params }: any) => {
 		mutationGetItem.mutate(params.invoiceId, {
 			onSuccess: (data) => {
 				const response = data.data.data.items;
+				const responseInvoice = data.data.data.invoice;
 
 				const items = response.map((item: Item) => {
 					return {
 						id: item.id,
-						invoiceNumber: item.invoice_number,
-						senderName: item.sender_name,
+						invoiceNumber: responseInvoice.invoice_number,
+						senderName: responseInvoice.sender_name,
 						tax: item.tax || 0,
 						description: item.description,
 						price: item.price,
