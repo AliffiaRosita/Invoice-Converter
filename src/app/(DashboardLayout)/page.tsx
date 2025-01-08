@@ -44,28 +44,28 @@ const Dashboard = () => {
 					<Grid item xs={12} lg={3}>
 						<TotalCard
 							label="Total Item"
-							value={`${dataDashboard?.item_count}`}
+							value={`${dataDashboard?.item_count || 0}`}
 							icon={<IconBox size={85} color={red[100]} />}
 						/>
 					</Grid>
 					<Grid item xs={12} lg={3}>
 						<TotalCard
 							label="Total User"
-							value={`${dataDashboard?.user_count}`}
+							value={`${dataDashboard?.user_count || 0}`}
 							icon={<IconUser size={85} color={indigo[100]} />}
 						/>
 					</Grid>
 					<Grid item xs={12} lg={3}>
 						<TotalCard
 							label="Total File"
-							value={`${dataDashboard?.file_invoice_count}`}
+							value={`${dataDashboard?.file_invoice_count || 0}`}
 							icon={<IconFile size={85} color={teal[100]} />}
 						/>
 					</Grid>
 					<Grid item xs={12} lg={3}>
 						<TotalCard
 							label="Total Invoice"
-							value={`${dataDashboard?.invoice_count}`}
+							value={`${dataDashboard?.invoice_count || 0}`}
 							icon={
 								<IconFileAnalytics
 									size={85}
