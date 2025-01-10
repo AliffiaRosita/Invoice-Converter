@@ -14,6 +14,8 @@ function decodeToken(token: JWT, user: any) {
 		token.email = decodedAccToken.email;
 		token.name = user.user.name;
 		token.role = user.user.role;
+		token.accessTokenExpires = Date.now() + 3 * 60 * 60 * 1000;
+		token.token = user.token;
 	}
 	// if (user.refreshToken) {
 	// 	const decodedRefToken = jwt.decode(user.refreshToken);
@@ -80,9 +82,17 @@ export const authOptions: NextAuthOptions = {
 			}
 			return true;
 		},
-		async jwt({ token, user }) {
+		async jwt({ token, user }: any) {
 			if (user) {
-				token = decodeToken(token, user);
+				const decodedToken = decodeToken(token, user);
+				if (decodedToken) {
+					token = decodedToken;
+				} else {
+					return null;
+				}
+			}
+			if (Date.now() > token.accessTokenExpires) {
+				return null;
 			}
 			// if (Date.now() > token.accessTokenExp * 1000) {
 			// 	const response = await axiosInstance(`/auth/refresh-token`, {
@@ -97,20 +107,32 @@ export const authOptions: NextAuthOptions = {
 			// }
 			return token;
 		},
-		async session({ session, token }) {
+		async session({ session, token }: any) {
 			if (token) {
 				session.user = {
 					id: token.id,
 					email: token.email,
 					name: token.name,
 					role: token.role,
-				} as { id: string; email: string; name: string; role: string };
+					accessTokenExpires: token.accessTokenExpires,
+					token: token.token,
+				} as {
+					id: string;
+					email: string;
+					name: string;
+					role: string;
+					accessTokenExpires: number;
+					token: string;
+				};
+			} else {
+				return null;
 			}
 			return session;
 		},
 	},
 	session: {
 		strategy: "jwt",
+		maxAge: 3 * 60 * 60,
 	},
 	pages: {
 		signIn: "/login",

@@ -1,7 +1,7 @@
 "use client";
 import { Grid, Box, Typography, Card, CardContent } from "@mui/material";
 import PageContainer from "@/app/(DashboardLayout)/components/container/PageContainer";
-import { useSession } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import { blue, blueGrey, green, indigo, red, teal } from "@mui/material/colors";
 import TotalCard from "./components/dashboard/TotalCard";
 import {
@@ -11,13 +11,25 @@ import {
 	IconUser,
 } from "@tabler/icons-react";
 import { useGetDashboardReport } from "@/services/rest/dashboard/mutation";
-import React from "react";
+import React, { useEffect } from "react";
 import { DashboardReport } from "@/services/rest/dashboard/types";
 
 const Dashboard = () => {
-	const { data } = useSession();
+	const { data }: any = useSession();
 	const mutation = useGetDashboardReport();
 	const [dataDashboard, setDataDashboard] = React.useState<DashboardReport>();
+
+	useEffect(() => {
+		if (data) {
+			const timer = setTimeout(() => {
+				if (Date.now() > data.accessTokenExpires) {
+					signOut();
+				}
+			}, data.accessTokenExpires - Date.now());
+
+			return () => clearTimeout(timer);
+		}
+	}, [data]);
 
 	const getData = () => {
 		mutation.mutate(undefined, {

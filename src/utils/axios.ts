@@ -12,10 +12,11 @@ const axiosInstance: AxiosInstance = axios.create({
 
 axiosInstance.interceptors.request.use(
 	async (config) => {
-		// const session = await getSession();
-		// if (session && session.user.accessToken) {
-		// 	config.headers.Authorization = `Bearer ${session.user.accessToken}`;
-		// }
+		const session: any = await getSession();
+
+		if (session && session.user.token) {
+			config.headers.Authorization = `Bearer ${session.user.token}`;
+		}
 		return config;
 	},
 	(error) => {
