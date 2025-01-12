@@ -1,5 +1,5 @@
 import axios, { AxiosInstance } from "axios";
-import { getSession } from "next-auth/react";
+import { getSession, signOut } from "next-auth/react";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -24,4 +24,16 @@ axiosInstance.interceptors.request.use(
 	}
 );
 
+axiosInstance.interceptors.response.use(
+	(response) => response,
+	async (error) => {
+		const session: any = await getSession();
+		if (error.response && error.response.status === 401) {
+			session.user = null;
+			session.token = null;
+			await signOut({ callbackUrl: "/authentication/login" });
+		}
+		return Promise.reject(error);
+	}
+);
 export default axiosInstance;

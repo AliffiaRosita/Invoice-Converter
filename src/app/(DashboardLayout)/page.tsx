@@ -22,7 +22,7 @@ const Dashboard = () => {
 	useEffect(() => {
 		if (data) {
 			const timer = setTimeout(() => {
-				if (Date.now() > data.accessTokenExpires) {
+				if (!data || Date.now() > data.accessTokenExpires) {
 					signOut();
 				}
 			}, data.accessTokenExpires - Date.now());
