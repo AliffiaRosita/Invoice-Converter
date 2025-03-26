@@ -8,16 +8,16 @@ export type Report = {
 	generate_status: string;
 };
 
-export type ResponseGetInvoices = {
+export type ResponseGetFileInvoices = {
 	success: boolean;
 	data: Report[];
 };
 
-export type ResponseGenerateInvoice = {
+export type ResponseGenerateFileInvoice = {
 	success: boolean;
 	data: Report;
 };
 
-export type ResponseDownloadInvoice = {
+export type ResponseDownloadFileInvoice = {
 	response: Blob;
 };

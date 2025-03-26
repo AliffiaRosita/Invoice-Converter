@@ -30,6 +30,12 @@ const User = () => {
 	const columns = React.useMemo<MRT_ColumnDef<Users>[]>(
 		() => [
 			{
+				accessorKey: "actions",
+				header: "Actions",
+				size: 150,
+				Cell: ({ row }) => renderActionButton(row.original),
+			},
+			{
 				accessorKey: "name",
 				header: "Name",
 				size: 390,
@@ -49,12 +55,6 @@ const User = () => {
 				header: "Last Login",
 				size: 200,
 			},
-			{
-				accessorKey: "actions",
-				header: "Actions",
-				size: 150,
-				Cell: ({ row }) => renderActionButton(row.original),
-			},
 		],
 		[]
 	);
@@ -68,6 +68,16 @@ const User = () => {
 		enableSorting: true,
 		enableFullScreenToggle: false,
 		enableDensityToggle: false,
+		muiTableBodyCellProps: {
+			sx: {
+				border: "1px solid rgba(224, 224, 224, 1)", // Add border to body cells
+			},
+		},
+		muiTableContainerProps: {
+			sx: {
+				border: "1px solid rgba(224, 224, 224, 1)", // Add outer border
+			},
+		},
 	});
 
 	async function getData() {

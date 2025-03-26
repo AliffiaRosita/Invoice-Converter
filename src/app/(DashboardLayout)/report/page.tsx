@@ -44,6 +44,7 @@ import {
 } from "material-react-table";
 import { Report } from "@/services/rest/file-invoices/types";
 import { blue } from "@mui/material/colors";
+import Link from "next/link";
 
 const style = {
 	position: "absolute",
@@ -192,9 +193,19 @@ const ReportPage = () => {
 	const columns2 = React.useMemo<MRT_ColumnDef<Report>[]>(
 		() => [
 			{
+				accessorKey: "actions",
+				header: "Actions",
+				Cell: ({ row }) => renderActionButton(row.original),
+			},
+			{
 				accessorKey: "name",
 				header: "Name",
 				size: 300,
+				Cell: ({ row }: any) => (
+					<Link href={`/report/${row.original.id}`}>
+						{row.original.name}
+					</Link>
+				),
 			},
 			{
 				accessorKey: "createdDate",
@@ -211,11 +222,6 @@ const ReportPage = () => {
 				header: "Generate Status",
 				Cell: ({ row }) => renderStatus(row.original),
 			},
-			{
-				accessorKey: "actions",
-				header: "Actions",
-				Cell: ({ row }) => renderActionButton(row.original),
-			},
 		],
 		[]
 	);
@@ -229,6 +235,16 @@ const ReportPage = () => {
 		enableSorting: true,
 		enableFullScreenToggle: false,
 		enableDensityToggle: false,
+		muiTableBodyCellProps: {
+			sx: {
+				border: "1px solid rgba(224, 224, 224, 1)", // Add border to body cells
+			},
+		},
+		muiTableContainerProps: {
+			sx: {
+				border: "1px solid rgba(224, 224, 224, 1)", // Add outer border
+			},
+		},
 	});
 
 	const renderStatus = (row: any) => {

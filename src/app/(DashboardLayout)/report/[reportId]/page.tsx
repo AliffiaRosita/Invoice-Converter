@@ -1,36 +1,36 @@
 "use client";
-import React from "react";
-import PageContainer from "../components/container/PageContainer";
-import DashboardCard from "../components/shared/DashboardCard";
-
+import {
+	useDownloadInvoice,
+	useGetInvoiceById,
+} from "@/services/rest/file-invoices/mutation";
 import {
 	useDownloadPdfInvoice,
 	useDownloadXlsInvoice,
-	useGetInvoices,
 } from "@/services/rest/invoices/mutation";
-import { useRouter } from "next/navigation";
-import { Box, IconButton } from "@mui/material";
-import {
-	IconFileTypePdf,
-	IconFileTypeXls,
-	IconPencil,
-} from "@tabler/icons-react";
-import moment from "moment-timezone";
+import { Invoice } from "@/services/rest/invoices/type";
+import { Box, Button, IconButton } from "@mui/material";
+import { IconPencil } from "@tabler/icons-react";
+import { IconFileTypePdf, IconFileTypeXls } from "@tabler/icons-react";
 import {
 	MaterialReactTable,
+	MRT_ColumnDef,
 	useMaterialReactTable,
-	type MRT_ColumnDef,
 } from "material-react-table";
-import { Invoice } from "@/services/rest/invoices/type";
+import moment from "moment-timezone";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import React from "react";
+import PageContainer from "../../components/container/PageContainer";
+import DashboardCard from "../../components/shared/DashboardCard";
 
-const InvoicePage = () => {
-	const mutationGetInvoices = useGetInvoices();
+const DetailReportPage = ({ params }: any) => {
+	const mutationDetailReport = useGetInvoiceById();
+	const [tableData, setTableData] = React.useState<any[]>([]);
 	const mutationDownloadXls = useDownloadXlsInvoice();
 	const mutationDownloadPdf = useDownloadPdfInvoice();
-	const [tableData, setTableData] = React.useState<any[]>([]);
-
+	const mutationDownloadFileInvoice = useDownloadInvoice();
 	const router = useRouter();
+
 	const columns = React.useMemo<MRT_ColumnDef<Invoice>[]>(
 		() => [
 			{
@@ -119,34 +119,6 @@ const InvoicePage = () => {
 		},
 	});
 
-	const getInvoices = async () => {
-		mutationGetInvoices.mutate(undefined, {
-			onSuccess: (data) => {
-				const response = data.data.data;
-
-				const invoices = response.map((invoice: any) => {
-					return {
-						id: invoice.id,
-						invoiceNumber: invoice.invoice_number,
-						receiverName: invoice.receiver_name,
-						receiverAddress: invoice.receiver_address,
-						senderName: invoice.sender_name,
-						senderAddress: invoice.sender_address,
-						subtotal: invoice.subtotal,
-						tax: invoice.tax,
-						total: invoice.total,
-						fileUrl: invoice.file_url,
-						invoiceDate: invoice.invoice_date,
-						createdDate: moment
-							.tz(invoice.created_at, "Asia/Jakarta")
-							.format("LL"),
-					};
-				});
-				setTableData(invoices);
-			},
-		});
-	};
-
 	const handleDownloadXls = (id: any) => {
 		mutationDownloadXls.mutate(id, {
 			onSuccess: (data: any) => {
@@ -182,9 +154,52 @@ const InvoicePage = () => {
 		});
 	};
 
+	const downloadFileInvoiceExcel = async () => {
+		mutationDownloadFileInvoice.mutate(params.reportId, {
+			onSuccess: (data: any) => {
+				const url = window.URL.createObjectURL(data.data);
+				const a = document.createElement("a");
+				a.href = url;
+				a.download = `${Date.now()}_file_invoice.xlsx`;
+				a.click();
+			},
+			onError: (error) => {
+				console.error(error);
+			},
+		});
+	};
+
 	React.useEffect(() => {
 		getInvoices();
 	}, []);
+
+	const getInvoices = async () => {
+		mutationDetailReport.mutate(params.reportId, {
+			onSuccess: (data) => {
+				const response = data.data.data;
+
+				const invoices = response.map((invoice: any) => {
+					return {
+						id: invoice.id,
+						invoiceNumber: invoice.invoice_number,
+						receiverName: invoice.receiver_name,
+						receiverAddress: invoice.receiver_address,
+						senderName: invoice.sender_name,
+						senderAddress: invoice.sender_address,
+						subtotal: invoice.subtotal,
+						tax: invoice.tax,
+						total: invoice.total,
+						fileUrl: invoice.file_url,
+						invoiceDate: invoice.invoice_date,
+						createdDate: moment
+							.tz(invoice.created_at, "Asia/Jakarta")
+							.format("LL"),
+					};
+				});
+				setTableData(invoices);
+			},
+		});
+	};
 
 	const renderActionButton = (row: any) => {
 		return (
@@ -229,6 +244,22 @@ const InvoicePage = () => {
 		<PageContainer title="Invoice" description="this is Invoice">
 			<DashboardCard title="Invoice">
 				<>
+					<Box
+						sx={{
+							display: "flex",
+							justifyContent: "flex-end",
+							mb: 2,
+						}}
+					>
+						<Button
+							onClick={() => downloadFileInvoiceExcel()}
+							variant="contained"
+							sx={{ mb: 2 }}
+						>
+							<IconFileTypeXls />
+							Export
+						</Button>
+					</Box>
 					{/* <DataGrid rows={tableData} columns={columns} /> */}
 					<MaterialReactTable table={table} />
 				</>
@@ -237,4 +268,4 @@ const InvoicePage = () => {
 	);
 };
 
-export default InvoicePage;
+export default DetailReportPage;

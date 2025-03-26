@@ -25,6 +25,12 @@ const Items = () => {
 	const columns = React.useMemo<MRT_ColumnDef<Item>[]>(
 		() => [
 			{
+				accessorKey: "actions",
+				header: "Actions",
+				size: 130,
+				Cell: ({ row }) => renderActionButton(row.original),
+			},
+			{
 				accessorKey: "invoiceNumber",
 				header: "Invoice Number",
 				size: 150,
@@ -53,13 +59,6 @@ const Items = () => {
 				accessorKey: "price",
 				header: "Price",
 				size: 100,
-			},
-
-			{
-				accessorKey: "actions",
-				header: "Actions",
-				size: 130,
-				Cell: ({ row }) => renderActionButton(row.original),
 			},
 		],
 		[]

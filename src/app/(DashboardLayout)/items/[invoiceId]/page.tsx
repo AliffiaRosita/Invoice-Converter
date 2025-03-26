@@ -24,6 +24,12 @@ const InvoiceItems = ({ params }: any) => {
 	const columns = React.useMemo<MRT_ColumnDef<any>[]>(
 		() => [
 			{
+				accessorKey: "actions",
+				header: "Actions",
+				size: 130,
+				Cell: ({ row }) => renderActionButton(row.original),
+			},
+			{
 				accessorKey: "invoiceNumber",
 				header: "Invoice Number",
 				size: 150,
@@ -55,12 +61,6 @@ const InvoiceItems = ({ params }: any) => {
 				header: "Price",
 				size: 100,
 			},
-			{
-				accessorKey: "actions",
-				header: "Actions",
-				size: 130,
-				Cell: ({ row }) => renderActionButton(row.original),
-			},
 		],
 		[]
 	);
@@ -73,6 +73,16 @@ const InvoiceItems = ({ params }: any) => {
 		enableSorting: true,
 		enableFullScreenToggle: false,
 		enableDensityToggle: false,
+		muiTableBodyCellProps: {
+			sx: {
+				border: "1px solid rgba(224, 224, 224, 1)", // Add border to body cells
+			},
+		},
+		muiTableContainerProps: {
+			sx: {
+				border: "1px solid rgba(224, 224, 224, 1)", // Add outer border
+			},
+		},
 	});
 
 	const getItems = async () => {
