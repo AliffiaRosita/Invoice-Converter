@@ -23,8 +23,10 @@ import {
 } from "material-react-table";
 import { Invoice } from "@/services/rest/invoices/type";
 import Link from "next/link";
+import { useSession } from "next-auth/react";
 
 const InvoicePage = () => {
+	const { data: session }: any = useSession();
 	const mutationGetInvoices = useGetInvoices();
 	const mutationDownloadXls = useDownloadXlsInvoice();
 	const mutationDownloadPdf = useDownloadPdfInvoice();
@@ -212,15 +214,17 @@ const InvoicePage = () => {
 				>
 					<IconFileTypePdf />
 				</IconButton>
-				<IconButton
-					aria-label="edit"
-					color="primary"
-					onClick={() => {
-						router.push(`/invoice/edit/${row?.id}`);
-					}}
-				>
-					<IconPencil />
-				</IconButton>
+				{session?.user?.role === "admin" && (
+					<IconButton
+						aria-label="edit"
+						color="primary"
+						onClick={() => {
+							router.push(`/invoice/edit/${row?.id}`);
+						}}
+					>
+						<IconPencil />
+					</IconButton>
+				)}
 			</Box>
 		);
 	};

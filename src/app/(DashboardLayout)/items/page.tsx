@@ -15,21 +15,31 @@ import {
 	useMaterialReactTable,
 	type MRT_ColumnDef,
 } from "material-react-table";
+import { useSession } from "next-auth/react";
 
 const Items = () => {
 	const mutationGetItem = useGetItems();
 	const mutationDownloadItem = useDownloadItem();
 	const [tableData, setTableData] = React.useState<any[]>([]);
 	const router = useRouter();
+	const { data: session }: any = useSession();
 
-	const columns = React.useMemo<MRT_ColumnDef<Item>[]>(
-		() => [
-			{
-				accessorKey: "actions",
-				header: "Actions",
-				size: 130,
-				Cell: ({ row }) => renderActionButton(row.original),
-			},
+	const columns = React.useMemo<MRT_ColumnDef<any>[]>(() => {
+		const adminColumns =
+			session?.user?.role === "admin"
+				? [
+						{
+							accessorKey: "actions",
+							header: "Actions",
+							size: 130,
+							Cell: ({ row }: any) =>
+								renderActionButton(row.original),
+						},
+				  ]
+				: [];
+
+		return [
+			...adminColumns,
 			{
 				accessorKey: "invoiceNumber",
 				header: "Invoice Number",
@@ -40,11 +50,13 @@ const Items = () => {
 				header: "Sender Name",
 				size: 200,
 			},
+
 			{
 				accessorKey: "description",
 				header: "Description",
 				size: 400,
 			},
+
 			{
 				accessorKey: "quantity",
 				header: "Quantity",
@@ -60,9 +72,8 @@ const Items = () => {
 				header: "Price",
 				size: 100,
 			},
-		],
-		[]
-	);
+		];
+	}, []);
 	const table = useMaterialReactTable({
 		columns,
 		data: tableData,

@@ -15,20 +15,30 @@ import {
 	type MRT_ColumnDef,
 } from "material-react-table";
 import { Invoice } from "@/services/rest/invoices/type";
+import { useSession } from "next-auth/react";
 
 const InvoiceItems = ({ params }: any) => {
 	const mutationGetItem = useGetInvoiceById();
 	const [tableData, setTableData] = React.useState<Invoice[]>([]);
 	const router = useRouter();
+	const { data: session }: any = useSession();
 
-	const columns = React.useMemo<MRT_ColumnDef<any>[]>(
-		() => [
-			{
-				accessorKey: "actions",
-				header: "Actions",
-				size: 130,
-				Cell: ({ row }) => renderActionButton(row.original),
-			},
+	const columns = React.useMemo<MRT_ColumnDef<any>[]>(() => {
+		const adminColumns =
+			session?.user?.role === "admin"
+				? [
+						{
+							accessorKey: "actions",
+							header: "Actions",
+							size: 130,
+							Cell: ({ row }: any) =>
+								renderActionButton(row.original),
+						},
+				  ]
+				: [];
+
+		return [
+			...adminColumns,
 			{
 				accessorKey: "invoiceNumber",
 				header: "Invoice Number",
@@ -61,9 +71,8 @@ const InvoiceItems = ({ params }: any) => {
 				header: "Price",
 				size: 100,
 			},
-		],
-		[]
-	);
+		];
+	}, []);
 	const table = useMaterialReactTable({
 		columns,
 		data: tableData,
