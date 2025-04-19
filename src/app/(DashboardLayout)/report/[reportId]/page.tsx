@@ -22,6 +22,7 @@ import { useRouter } from "next/navigation";
 import React from "react";
 import PageContainer from "../../components/container/PageContainer";
 import DashboardCard from "../../components/shared/DashboardCard";
+import BackButton from "../../components/button/BackButton";
 
 const DetailReportPage = ({ params }: any) => {
 	const mutationDetailReport = useGetInvoiceById();
@@ -242,28 +243,31 @@ const DetailReportPage = ({ params }: any) => {
 
 	return (
 		<PageContainer title="Invoice" description="this is Invoice">
-			<DashboardCard title="Invoice">
-				<>
-					<Box
-						sx={{
-							display: "flex",
-							justifyContent: "flex-end",
-							mb: 2,
-						}}
-					>
-						<Button
-							onClick={() => downloadFileInvoiceExcel()}
-							variant="contained"
-							sx={{ mb: 2 }}
+			<>
+				<BackButton router={router} />
+				<DashboardCard title="Invoice">
+					<>
+						<Box
+							sx={{
+								display: "flex",
+								justifyContent: "flex-end",
+								mb: 2,
+							}}
 						>
-							<IconFileTypeXls />
-							Export
-						</Button>
-					</Box>
-					{/* <DataGrid rows={tableData} columns={columns} /> */}
-					<MaterialReactTable table={table} />
-				</>
-			</DashboardCard>
+							<Button
+								onClick={() => downloadFileInvoiceExcel()}
+								variant="contained"
+								sx={{ mb: 2 }}
+							>
+								<IconFileTypeXls />
+								Export
+							</Button>
+						</Box>
+						{/* <DataGrid rows={tableData} columns={columns} /> */}
+						<MaterialReactTable table={table} />
+					</>
+				</DashboardCard>
+			</>
 		</PageContainer>
 	);
 };

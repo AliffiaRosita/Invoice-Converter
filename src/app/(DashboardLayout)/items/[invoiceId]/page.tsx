@@ -16,6 +16,7 @@ import {
 } from "material-react-table";
 import { Invoice } from "@/services/rest/invoices/type";
 import { useSession } from "next-auth/react";
+import BackButton from "../../components/button/BackButton";
 
 const InvoiceItems = ({ params }: any) => {
 	const mutationGetItem = useGetInvoiceById();
@@ -146,6 +147,7 @@ const InvoiceItems = ({ params }: any) => {
 
 	return (
 		<PageContainer title="Items" description="this is Items">
+			<BackButton router={router} />
 			<DashboardCard title="Items">
 				<>
 					{/* <DataGrid rows={tableData} columns={columns} /> */}

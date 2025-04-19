@@ -57,10 +57,6 @@ const style = {
 	boxShadow: 24,
 	p: 4,
 };
-interface Values {
-	email: string;
-	password: string;
-}
 const ReportPage = () => {
 	const [open, setOpen] = React.useState(false);
 	const handleOpen = () => setOpen(true);
@@ -141,7 +137,7 @@ const ReportPage = () => {
 						createdTime: moment
 							.tz(item.created_at, "Asia/Jakarta")
 							.format("LT"),
-						isGenerated: !!item.generated_url,
+						isGenerated: item.generate_status === "success",
 						isGenerating: item.generate_status === "processing",
 						generateStatus: item.generate_status,
 					};
